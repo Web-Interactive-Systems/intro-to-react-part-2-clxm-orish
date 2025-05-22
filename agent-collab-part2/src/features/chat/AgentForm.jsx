@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { styled } from '@stitches/react';
+import EmojiPicker from './EmojiPicker';
+
+const EmojiList = ['😀', '😎', '🤖', '👽', '👩‍💻', '🧙‍♂️', '🧠', '👻', '🦾', '🐉'];
 
 const FormContainer = styled('div', {
   display: 'flex',
@@ -41,31 +44,31 @@ const Button = styled('button', {
 });
 
 const Slider = styled('input', {
-    width: '100%',
-    marginTop: '8px',
-    appearance: 'none',
-    height: '6px',
-    borderRadius: '5px',
-    background: '#ccc',
-    outline: 'none',
-    opacity: '0.9',
-    transition: 'opacity .2s',
-  
-    '&:hover': {
-      opacity: '1',
-    },
-  
-    '&::-webkit-slider-thumb': {
-      appearance: 'none',
-      width: '15px',
-      height: '15px',
-      borderRadius: '50%',
-      background: '#4CAF50',
-      cursor: 'pointer',
-    }
-  });
+  width: '100%',
+  marginTop: '8px',
+  appearance: 'none',
+  height: '6px',
+  borderRadius: '5px',
+  background: '#ccc',
+  outline: 'none',
+  opacity: '0.9',
+  transition: 'opacity .2s',
 
-const AgentForm = ({ onSave, onCancel }) => {
+  '&:hover': {
+    opacity: '1',
+  },
+
+  '&::-webkit-slider-thumb': {
+    appearance: 'none',
+    width: '15px',
+    height: '15px',
+    borderRadius: '50%',
+    background: '#4CAF50',
+    cursor: 'pointer',
+  }
+});
+
+const AgentForm = ({ onSave, onCancel, initialData }) => {
   const [formData, setFormData] = useState({
     emoji: '😀',
     title: '',
@@ -74,6 +77,14 @@ const AgentForm = ({ onSave, onCancel }) => {
     temperature: 0.5,
     desired_response: ''
   });
+
+
+  // 🧠 Mise à jour si initialData est fourni (édition)
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,11 +98,12 @@ const AgentForm = ({ onSave, onCancel }) => {
 
   return (
     <FormContainer>
-      <Input name="emoji" placeholder="Emoji" value={formData.emoji} onChange={handleChange} />
+      <EmojiPicker EmojiList={EmojiList} onSelect={(emoji) => setFormData({ ...formData, emoji })} ></EmojiPicker>
       <Input name="title" placeholder="Title" value={formData.title} onChange={handleChange} />
       <Input name="role" placeholder="Role" value={formData.role} onChange={handleChange} />
       <Input name="response_format" placeholder="Response Format" value={formData.response_format} onChange={handleChange} />
       <TextArea name="desired_response" placeholder="Desired Response" value={formData.desired_response} onChange={handleChange} />
+
       <label>Temperature: {formData.temperature}</label>
       <Slider
         type="range"
@@ -102,6 +114,7 @@ const AgentForm = ({ onSave, onCancel }) => {
         value={formData.temperature}
         onChange={handleChange}
       />
+
       <Button onClick={handleSubmit}>Sauver</Button>
       <Button onClick={onCancel} style={{ backgroundColor: '#d9534f' }}>Annuler</Button>
     </FormContainer>
