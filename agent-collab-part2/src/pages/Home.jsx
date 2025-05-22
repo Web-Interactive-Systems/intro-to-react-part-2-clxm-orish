@@ -1,5 +1,6 @@
 import { Resizable } from '@/components/Resizable'
 import Chat from '@/features/chat/Chat'
+import Agent from '@/features/chat/Agent'
 import { Flex } from '@radix-ui/themes'
 
 function Home() {
@@ -9,7 +10,7 @@ function Home() {
       width='100%'
       height='100%'>
       {/* Todo add agent view here */}
-
+      <Agent/>
       <Resizable
         className='resizable'
         style={{
